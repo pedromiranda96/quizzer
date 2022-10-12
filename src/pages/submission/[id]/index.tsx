@@ -72,7 +72,7 @@ export default function SubmissionPage({ submission }: SubmissionPageProps) {
                 (answer, index) => (
                   <button
                     key={answer.id}
-                    className={`p-4 font-semibold rounded text-left transition-colors ${
+                    className={`p-4 font-semibold rounded text-left transition-colors break-words ${
                       selectedAnswerIndex === index
                         ? "bg-indigo-600 text-white"
                         : "bg-slate-200 text-slate-800 hover:bg-slate-300"
