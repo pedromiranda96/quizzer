@@ -58,7 +58,7 @@ export default function QuizPage({ quiz }: QuizPageProps) {
             </header>
             <main className="flex flex-col items-center mt-10">
               <Image
-                src={"/fallback-avatar.png"}
+                src={quiz.user.image ?? "/fallback-avatar.png"}
                 alt="alt"
                 width={128}
                 height={128}
