@@ -15,11 +15,12 @@ type QuestionListProps = {
 
 // TODO: Implement update question
 export function QuestionList({ onClickNewQuestion }: QuestionListProps) {
-  const { questions, ...questionManagement } = useQuestionManagement();
+  const { questions, moveQuestionUp, moveQuestionDown, deleteQuestion } =
+    useQuestionManagement();
 
   function promptDeleteQuestion(index: number) {
     if (confirm("This action cannot be undone.")) {
-      questionManagement.deleteQuestion(index);
+      deleteQuestion(index);
     }
   }
 
@@ -91,9 +92,7 @@ export function QuestionList({ onClickNewQuestion }: QuestionListProps) {
                         title="Move question up"
                         className="group"
                         disabled={questionIndex === 0}
-                        onClick={() =>
-                          questionManagement.moveQuestionUp(questionIndex)
-                        }
+                        onClick={() => moveQuestionUp(questionIndex)}
                       >
                         <ArrowCircleUp
                           className="w-5 h-5 text-slate-500 hover:text-indigo-600 group-disabled:text-slate-300 transition-colors"
@@ -105,9 +104,7 @@ export function QuestionList({ onClickNewQuestion }: QuestionListProps) {
                         title="Move question down"
                         className="group"
                         disabled={questionIndex === questions.length - 1}
-                        onClick={() =>
-                          questionManagement.moveQuestionDown(questionIndex)
-                        }
+                        onClick={() => moveQuestionDown(questionIndex)}
                       >
                         <ArrowCircleDown
                           className="w-5 h-5 text-slate-500 hover:text-indigo-600 group-disabled:text-slate-300 transition-colors"

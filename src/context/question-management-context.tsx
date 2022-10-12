@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-export type Question = {
+type Question = {
   text: string;
   answers: string[];
   correctAnswerIndex: number;

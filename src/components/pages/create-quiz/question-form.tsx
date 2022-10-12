@@ -1,10 +1,10 @@
 import { Trash } from "phosphor-react";
 import { KeyboardEvent, useState } from "react";
 
-import { Question } from "app/context/question-management-context";
+import { useQuestionManagement } from "app/context/question-management-context";
 
 type QuestionFormProps = {
-  onQuestionSaved: (question: Question, index?: number) => void;
+  onQuestionSaved: () => void;
   onCancel: () => void;
 };
 
@@ -12,6 +12,8 @@ const MIN_QUESTION_ANSWERS = 2;
 const NO_ANSWER_SELECTED = -1;
 
 export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
+  const { addQuestion } = useQuestionManagement();
+
   const [text, setText] = useState("");
   const [answer, setAnswer] = useState("");
   const [answers, setAnswers] = useState<string[]>([]);
@@ -26,6 +28,16 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
     } else if (correctAnswerIndex > index) {
       setCorrectAnswerIndex((correctAnswerIndex) => correctAnswerIndex - 1);
     }
+  }
+
+  function handleSaveQuestion() {
+    addQuestion({
+      text,
+      answers,
+      correctAnswerIndex,
+    });
+
+    onQuestionSaved();
   }
 
   function onAnswerInputKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -155,7 +167,7 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
             answers.length < MIN_QUESTION_ANSWERS ||
             correctAnswerIndex == NO_ANSWER_SELECTED
           }
-          onClick={() => onQuestionSaved({ text, answers, correctAnswerIndex })}
+          onClick={handleSaveQuestion}
         >
           Create question
         </button>

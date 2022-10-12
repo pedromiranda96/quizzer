@@ -2,11 +2,6 @@ import { Dialog } from "@headlessui/react";
 import { X } from "phosphor-react";
 import { useState } from "react";
 
-import {
-  Question,
-  useQuestionManagement,
-} from "app/context/question-management-context";
-
 import { QuestionForm } from "./question-form";
 import { QuestionList } from "./question-list";
 
@@ -19,13 +14,7 @@ export function QuestionManagementModal({
   open,
   onClose,
 }: QuestionManagementModalProps) {
-  const { addQuestion } = useQuestionManagement();
   const [creatingQuestion, setCreatingQuestion] = useState(false);
-
-  function handleSaveQuestion(question: Question) {
-    setCreatingQuestion(false);
-    addQuestion(question);
-  }
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -44,7 +33,7 @@ export function QuestionManagementModal({
 
           {creatingQuestion ? (
             <QuestionForm
-              onQuestionSaved={handleSaveQuestion}
+              onQuestionSaved={() => setCreatingQuestion(false)}
               onCancel={() => setCreatingQuestion(false)}
             />
           ) : (
