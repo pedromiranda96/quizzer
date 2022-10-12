@@ -15,8 +15,8 @@ type QuizPageProps = {
     description: string;
     tags: string[];
     user: {
-      image: string | null;
       id: string;
+      image: string | null;
       name: string | null;
     };
     _count: {
@@ -58,7 +58,7 @@ export default function QuizPage({ quiz }: QuizPageProps) {
             </header>
             <main className="flex flex-col items-center mt-10">
               <Image
-                src={quiz.user.image ?? "https://github.com/diego3g"}
+                src={"/fallback-avatar.png"}
                 alt="alt"
                 width={128}
                 height={128}
@@ -67,9 +67,9 @@ export default function QuizPage({ quiz }: QuizPageProps) {
               <span className="text-slate-500 text-md font-light mt-4 leading-4">
                 created by
               </span>
-              <Link href="/profile/123">
+              <Link href={`/profile/${quiz.user.id}`}>
                 <a className="text-lg text-indigo-800 font-bold hover:underline">
-                  {quiz.user.name}
+                  {quiz.user.name ?? `u::${quiz.user.id}`}
                 </a>
               </Link>
               <div className="flex items-center divide-x-2 w-full mt-10">
