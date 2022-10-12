@@ -1,9 +1,10 @@
 import { Trash } from "phosphor-react";
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useRef, useState } from "react";
 
 import { useQuestionManagement } from "app/context/question-management-context";
 
 type QuestionFormProps = {
+  updatingQuestionWithIndex: number | undefined;
   onQuestionSaved: () => void;
   onCancel: () => void;
 };
@@ -11,14 +12,32 @@ type QuestionFormProps = {
 const MIN_QUESTION_ANSWERS = 2;
 const NO_ANSWER_SELECTED = -1;
 
-export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
-  const { addQuestion } = useQuestionManagement();
+export function QuestionForm({
+  updatingQuestionWithIndex,
+  onQuestionSaved,
+  onCancel,
+}: QuestionFormProps) {
+  const { questions, addQuestion, updateQuestion } = useQuestionManagement();
 
-  const [text, setText] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [correctAnswerIndex, setCorrectAnswerIndex] =
-    useState(NO_ANSWER_SELECTED);
+  const [text, setText] = useState(() => {
+    return updatingQuestionWithIndex !== undefined
+      ? questions[updatingQuestionWithIndex].text
+      : "";
+  });
+
+  const [answers, setAnswers] = useState(() => {
+    return updatingQuestionWithIndex !== undefined
+      ? questions[updatingQuestionWithIndex].answers
+      : [];
+  });
+
+  const [correctAnswerIndex, setCorrectAnswerIndex] = useState(() => {
+    return updatingQuestionWithIndex !== undefined
+      ? questions[updatingQuestionWithIndex].correctAnswerIndex
+      : NO_ANSWER_SELECTED;
+  });
+
+  const answerInputRef = useRef<HTMLTextAreaElement>(null);
 
   function deleteAnswer(index: number) {
     setAnswers((answers) => answers.filter((_, i) => i !== index));
@@ -31,11 +50,19 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
   }
 
   function handleSaveQuestion() {
-    addQuestion({
-      text,
-      answers,
-      correctAnswerIndex,
-    });
+    if (updatingQuestionWithIndex !== undefined) {
+      updateQuestion(updatingQuestionWithIndex, {
+        text,
+        answers,
+        correctAnswerIndex,
+      });
+    } else {
+      addQuestion({
+        text,
+        answers,
+        correctAnswerIndex,
+      });
+    }
 
     onQuestionSaved();
   }
@@ -44,14 +71,18 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
     if (e.key === "Enter") {
       e.preventDefault();
 
-      if (answer.length > 0) {
+      const answer = answerInputRef.current!;
+      if (answer.value.length > 0) {
         if (
-          !answers.some((ans) => ans.toLowerCase() === answer.toLowerCase())
+          !answers.some(
+            (ans) => ans.toLowerCase() === answer.value.toLowerCase()
+          )
         ) {
-          setAnswers((answers) => [...answers, answer]);
+          const ans = answer.value;
+          setAnswers((answers) => [...answers, ans]);
         }
 
-        setAnswer("");
+        answer.value = "";
       }
     }
   }
@@ -60,12 +91,25 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
     <>
       <div className="flex-1 flex flex-col overflow-y-auto">
         <div className="flex flex-col px-4 pt-4 pb-8">
-          <h1 className="text slate-700 text-lg font-bold">
-            Create a new question
-          </h1>
-          <p className="text-slate-600 font-medium leading-3">
-            Create as many as you want, with as many answers as you want
-          </p>
+          {updatingQuestionWithIndex === undefined ? (
+            <>
+              <h1 className="text slate-700 text-lg font-bold">
+                Create a new question
+              </h1>
+              <p className="text-slate-600 font-medium leading-3">
+                Create as many as you want, with as many answers as you want
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text slate-700 text-lg font-bold">
+                Edit question
+              </h1>
+              <p className="text-slate-600 font-medium leading-3">
+                Make changes to your question
+              </p>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-4 px-4">
@@ -91,8 +135,7 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
             <textarea
               rows={1}
               className="mt-1 text-sm border border-slate-300 rounded resize-y"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              ref={answerInputRef}
               onKeyDown={onAnswerInputKeyDown}
             />
           </div>
@@ -169,7 +212,9 @@ export function QuestionForm({ onQuestionSaved, onCancel }: QuestionFormProps) {
           }
           onClick={handleSaveQuestion}
         >
-          Create question
+          {updatingQuestionWithIndex === undefined
+            ? "Create question"
+            : "Save changes"}
         </button>
       </div>
     </>

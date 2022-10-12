@@ -11,10 +11,14 @@ import { useQuestionManagement } from "app/context/question-management-context";
 
 type QuestionListProps = {
   onClickNewQuestion: () => void;
+  onClickEditQuestion: (index: number) => void;
 };
 
 // TODO: Implement update question
-export function QuestionList({ onClickNewQuestion }: QuestionListProps) {
+export function QuestionList({
+  onClickNewQuestion,
+  onClickEditQuestion,
+}: QuestionListProps) {
   const { questions, moveQuestionUp, moveQuestionDown, deleteQuestion } =
     useQuestionManagement();
 
@@ -81,7 +85,11 @@ export function QuestionList({ onClickNewQuestion }: QuestionListProps) {
                       ))}
                     </ol>
                     <div className="flex items-center justify-end gap-2 mt-4 border-slate-300 pt-2">
-                      <button type="button" title="Edit question">
+                      <button
+                        type="button"
+                        title="Edit question"
+                        onClick={() => onClickEditQuestion(questionIndex)}
+                      >
                         <Pencil
                           className="w-5 h-5 text-slate-500 hover:text-indigo-600 transition-colors"
                           weight="bold"

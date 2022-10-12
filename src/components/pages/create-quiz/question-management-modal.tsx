@@ -14,14 +14,23 @@ export function QuestionManagementModal({
   open,
   onClose,
 }: QuestionManagementModalProps) {
-  const [creatingQuestion, setCreatingQuestion] = useState(false);
+  const [shouldDisplayQuestionForm, setShouldDisplayQuestionForm] =
+    useState(false);
+
+  const [updatingQuestionWithIndex, setUpdatingQuestionWithIndex] = useState<
+    number | undefined
+  >(undefined);
+
+  function exitQuestionForm() {
+    setShouldDisplayQuestionForm(false);
+    setUpdatingQuestionWithIndex(undefined);
+  }
 
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/80" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="flex flex-col mx-auto w-[960px] h-[672px] rounded bg-white">
-          {/* Dialog header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <Dialog.Title className="text-slate-800 font-bold text-xl">
               Manage questions
@@ -31,14 +40,19 @@ export function QuestionManagementModal({
             </button>
           </div>
 
-          {creatingQuestion ? (
+          {shouldDisplayQuestionForm ? (
             <QuestionForm
-              onQuestionSaved={() => setCreatingQuestion(false)}
-              onCancel={() => setCreatingQuestion(false)}
+              onQuestionSaved={exitQuestionForm}
+              onCancel={exitQuestionForm}
+              updatingQuestionWithIndex={updatingQuestionWithIndex}
             />
           ) : (
             <QuestionList
-              onClickNewQuestion={() => setCreatingQuestion(true)}
+              onClickNewQuestion={() => setShouldDisplayQuestionForm(true)}
+              onClickEditQuestion={(index) => {
+                setUpdatingQuestionWithIndex(index);
+                setShouldDisplayQuestionForm(true);
+              }}
             />
           )}
         </Dialog.Panel>
