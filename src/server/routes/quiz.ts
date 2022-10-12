@@ -8,6 +8,7 @@ export const quizRouter = t.router({
       z.object({
         title: z.string(),
         description: z.string(),
+        tags: z.string().array(),
         questions: z
           .object({
             text: z.string(),
@@ -22,6 +23,7 @@ export const quizRouter = t.router({
         data: {
           title: input.title,
           description: input.description,
+          tags: input.tags,
           user: {
             connect: {
               id: ctx.session.user.id,

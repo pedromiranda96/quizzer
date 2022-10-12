@@ -59,10 +59,11 @@ function PageContent() {
     },
   });
 
-  const onSubmit = handleSubmit(({ title, description }) => {
+  const onSubmit = handleSubmit(({ title, description, tags }) => {
     createQuiz({
       title,
       description,
+      tags,
       questions,
     });
   });

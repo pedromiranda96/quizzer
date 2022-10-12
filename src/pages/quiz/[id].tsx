@@ -1,4 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ type QuizPageProps = {
     id: string;
     title: string;
     description: string;
+    tags: string[];
     user: {
       image: string | null;
       id: string;
@@ -24,7 +26,6 @@ type QuizPageProps = {
   };
 };
 
-// TODO: Display quiz tags somewhere
 export default function QuizPage({ quiz }: QuizPageProps) {
   const router = useRouter();
 
@@ -40,54 +41,71 @@ export default function QuizPage({ quiz }: QuizPageProps) {
   });
 
   return (
-    <Layout>
-      <div className="flex-1 flex">
-        <div className="flex flex-col m-auto w-[420px]">
-          <header className="space-y-1">
-            <h1 className="text-2xl text-slate-800 text-center font-bold">
-              {quiz.title}
-            </h1>
-            <h2 className="text-lg text-slate-500 text-center font-semibold">
-              {quiz.description}
-            </h2>
-          </header>
-          <main className="flex flex-col items-center mt-10">
-            <Image
-              src={quiz.user.image ?? "https://github.com/diego3g"}
-              alt="alt"
-              width={128}
-              height={128}
-              className="rounded-full"
-            />
-            <span className="text-slate-500 text-md font-light mt-4 leading-4">
-              created by
-            </span>
-            <Link href="/profile/123">
-              <a className="text-lg text-indigo-800 font-bold hover:underline">
-                {quiz.user.name}
-              </a>
-            </Link>
-            <div className="flex items-center divide-x-2 w-full mt-10">
-              <QuizStat label="Questions" value={quiz._count.questions} />
-              <QuizStat label="Time" value="15:00" />
-              <QuizStat
-                label="Submissions"
-                value={compactNumberFormatter.format(quiz._count.submissions)}
+    <>
+      <Head>
+        <title>{`${quiz.title} - Quizzer`}</title>
+      </Head>
+      <Layout>
+        <div className="flex-1 flex py-8">
+          <div className="flex flex-col m-auto w-[420px]">
+            <header className="space-y-1">
+              <h1 className="text-2xl text-slate-800 text-center font-bold">
+                {quiz.title}
+              </h1>
+              <h2 className="text-lg text-slate-500 text-center font-semibold">
+                {quiz.description}
+              </h2>
+            </header>
+            <main className="flex flex-col items-center mt-10">
+              <Image
+                src={quiz.user.image ?? "https://github.com/diego3g"}
+                alt="alt"
+                width={128}
+                height={128}
+                className="rounded-full"
               />
-            </div>
-          </main>
-          <button
-            className="py-2 bg-indigo-800 text-white font-bold rounded mt-12 hover:bg-indigo-900 transition-colors disabled:bg-slate-400"
-            disabled={isLoading}
-            onClick={() => {
-              createSubmission({ quizId: quiz.id });
-            }}
-          >
-            Start Quiz
-          </button>
+              <span className="text-slate-500 text-md font-light mt-4 leading-4">
+                created by
+              </span>
+              <Link href="/profile/123">
+                <a className="text-lg text-indigo-800 font-bold hover:underline">
+                  {quiz.user.name}
+                </a>
+              </Link>
+              <div className="flex items-center divide-x-2 w-full mt-10">
+                <QuizStat label="Questions" value={quiz._count.questions} />
+                <QuizStat label="Time" value="15:00" />
+                <QuizStat
+                  label="Submissions"
+                  value={compactNumberFormatter.format(quiz._count.submissions)}
+                />
+              </div>
+            </main>
+            <section className="mt-12">
+              <button
+                className="py-2 w-full bg-indigo-800 text-white font-bold rounded hover:bg-indigo-900 transition-colors disabled:bg-slate-400"
+                disabled={isLoading}
+                onClick={() => {
+                  createSubmission({ quizId: quiz.id });
+                }}
+              >
+                Start Quiz
+              </button>
+            </section>
+            <section className="flex gap-2 flex-wrap justify-center items-start mt-8">
+              {quiz.tags.map((tag) => (
+                <button
+                  key={tag}
+                  className="bg-indigo-200 text-indigo-800 px-2 rounded-full hover:bg-indigo-300 font-medium transition-colors"
+                >
+                  {tag}
+                </button>
+              ))}
+            </section>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 }
 
@@ -119,6 +137,7 @@ export const getStaticProps: GetStaticProps<QuizPageProps> = async ({
       id: true,
       title: true,
       description: true,
+      tags: true,
       user: {
         select: {
           id: true,
@@ -145,5 +164,6 @@ export const getStaticProps: GetStaticProps<QuizPageProps> = async ({
     props: {
       quiz,
     },
+    revalidate: 600,
   };
 };
