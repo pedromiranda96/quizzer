@@ -164,12 +164,12 @@ function PageContent() {
           <div className="flex flex-col gap-1">
             <button
               type="button"
-              className="py-2 bg-indigo-600 text-white text-sm font-bold rounded hover:bg-indigo-800 disabled:bg-slate-400 transition-colors relative"
+              className="py-2 bg-indigo-600 text-white text-sm font-bold rounded hover:bg-indigo-800 disabled:bg-slate-400 transition-colors relative group"
               onClick={() => setManagingQuestions(true)}
               disabled={isLoading}
             >
               Manage questions
-              <span className="px-2 py-1 text-sm text-white bg-sky-600 rounded-full absolute top-0 right-2 -translate-y-1/2">
+              <span className="px-2 py-1 text-sm text-white bg-sky-600 rounded-full absolute top-0 right-2 -translate-y-1/2 group-disabled:bg-slate-600">
                 {questions.length}
               </span>
             </button>
