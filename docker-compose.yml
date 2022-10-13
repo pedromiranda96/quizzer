@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  postgres:
+    image: "bitnami/postgresql"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=quizzer
+    volumes:
+      - "postgresql_data:/bitnami/postgres"
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge
+
+volumes:
+  postgresql_data:
+    driver: local
