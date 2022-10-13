@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,16 +18,11 @@ interface CreateQuizFormData {
 
 export default function CreateQuizPage() {
   return (
-    <>
-      <Head>
-        <title>Create Quiz - Quizzer</title>
-      </Head>
-      <Layout>
-        <QuestionManagementProvider>
-          <PageContent />
-        </QuestionManagementProvider>
-      </Layout>
-    </>
+    <Layout pageTitle="Create Quiz">
+      <QuestionManagementProvider>
+        <PageContent />
+      </QuestionManagementProvider>
+    </Layout>
   );
 }
 
