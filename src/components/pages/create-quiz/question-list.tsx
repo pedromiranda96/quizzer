@@ -14,7 +14,6 @@ type QuestionListProps = {
   onClickEditQuestion: (index: number) => void;
 };
 
-// TODO: Implement update question
 export function QuestionList({
   onClickNewQuestion,
   onClickEditQuestion,

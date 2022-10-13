@@ -17,9 +17,8 @@ export function QuestionManagementModal({
   const [shouldDisplayQuestionForm, setShouldDisplayQuestionForm] =
     useState(false);
 
-  const [updatingQuestionWithIndex, setUpdatingQuestionWithIndex] = useState<
-    number | undefined
-  >(undefined);
+  const [updatingQuestionWithIndex, setUpdatingQuestionWithIndex] =
+    useState<number>();
 
   function exitQuestionForm() {
     setShouldDisplayQuestionForm(false);
