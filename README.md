@@ -1,34 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+_**This is a work in progress**_
 
-## Getting Started
+Quizzer is an app where users can create and answer quizzes. Its core stack is the [T3 stack](https://create.t3.gg/).
 
-First, run the development server:
+## Running the app
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+1. Clone/fork this repository
+2. Install the dependencies with `pnpm install`
+3. Create an OAuth 2.0 app in Google. You will need a client id and secret for the authentication to work.
+4. Make sure you have Postgres running. I've set up a `docker-compose.yml` file with Postgres, so if you have Docker installed just run `docker-compose up` on your terminal.
+5. Set up your environment following the .env.example file.
+6. Push the Prisma migrations to the database by running `pnpm prisma db push`.
+7. Run the app with `pnpm run dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Helpful Links
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- [NextAuth Docs](https://next-auth.js.org/)
+- [How to set up OAuth 2.0 in Google](https://support.google.com/cloud/answer/6158849?hl=en&ref_topic=3473162)
+- [Prisma Docs](https://www.prisma.io/docs/)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Screenshots
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Here are a few images of what was built so far
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![Create quiz page](.github/assets/create-quiz.png)
+![Create quiz page - Question management](.github/assets/create-quiz-manage-questions.png)
+![Create quiz page - Question management](.github/assets/create-quiz-question-form.png)
+![Create quiz page - Question management](.github/assets/create-quiz-question-list.png)
+![Create quiz page](.github/assets/submission.png)
