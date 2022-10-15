@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { KeyboardEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Layout } from "app/components/common/layout";
@@ -12,7 +12,6 @@ import { trpc } from "app/utils/trpc";
 
 interface CreateQuizFormData {
   title: string;
-  tags: string[];
   description: string;
 }
 
@@ -31,20 +30,14 @@ function PageContent() {
 
   const {
     register,
-    watch,
-    setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateQuizFormData>({
-    defaultValues: {
-      tags: [],
-    },
-  });
-
-  const { tags } = watch();
+  } = useForm<CreateQuizFormData>();
   const { questions } = useQuestionManagement();
 
-  const [tag, setTag] = useState("");
+  const tagInputRef = useRef<HTMLInputElement>(null);
+  const [tags, setTags] = useState<string[]>([]);
+
   const [managingQuestions, setManagingQuestions] = useState(false);
 
   const { mutateAsync: createQuiz, isLoading } = trpc.quiz.create.useMutation({
@@ -53,7 +46,28 @@ function PageContent() {
     },
   });
 
-  const onSubmit = handleSubmit(({ title, description, tags }) => {
+  const handleKeyDownOnTagInput = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const tag = tagInputRef.current!;
+      if (tag.value.length > 0) {
+        const lowercase = tag.value.toLowerCase();
+
+        if (!tags.some((t) => t === lowercase)) {
+          setTags((tags) => [...tags, lowercase]);
+        }
+
+        tag.value = "";
+      }
+    }
+  };
+
+  const deleteTag = (tag: string) => {
+    setTags((tags) => tags.filter((t) => t !== tag));
+  };
+
+  const onSubmit = handleSubmit(({ title, description }) => {
     createQuiz({
       title,
       description,
@@ -99,36 +113,16 @@ function PageContent() {
             <input
               type="text"
               className="text-sm border border-slate-300 rounded"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-
-                  if (tag) {
-                    const lowercase = tag.toLowerCase();
-                    setTag("");
-
-                    if (!tags.some((t) => t === lowercase)) {
-                      setValue("tags", [...tags, lowercase]);
-                    }
-                  }
-                }
-              }}
+              ref={tagInputRef}
+              onKeyDown={handleKeyDownOnTagInput}
             />
-            <input type="hidden" {...register("tags")} />
             <div className="flex gap-1 justify-end flex-wrap">
               {tags.map((tag, index) => (
                 <button
                   type="button"
                   key={index}
                   className="text-sm bg-indigo-200 text-indigo-800 px-2 rounded-full hover:bg-red-200 hover:text-red-800"
-                  onClick={() => {
-                    setValue(
-                      "tags",
-                      tags.filter((t) => t !== tag)
-                    );
-                  }}
+                  onClick={() => deleteTag(tag)}
                 >
                   {tag}
                 </button>
