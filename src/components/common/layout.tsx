@@ -14,7 +14,7 @@ export function Layout({ pageTitle, children }: LayoutProps) {
   return (
     <>
       <Head>
-        <title>{pageTitle} - Quizzer</title>
+        <title>{`${pageTitle} - Quizzer`}</title>
       </Head>
       <div className="min-h-screen flex flex-col px-40">
         <nav className="flex items-center justify-between pt-6 py-2 border-b border-slate-200 px-1">
